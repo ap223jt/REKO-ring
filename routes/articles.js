@@ -1,6 +1,7 @@
-const express = require('express')
+const express = require('express');
+const { append } = require('express/lib/response');
 const router = express.Router()
-const Article = require('../models//article')
+const Article = require('../models/article')
 
 //Getting all
 router.get('/', async (req,res) => {
