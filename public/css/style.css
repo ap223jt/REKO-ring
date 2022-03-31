@@ -17,3 +17,7 @@
     border: 2px solid blue;
     width: 20%;
 }
+
+.info ul li span {
+    padding-right: 25px;
+}

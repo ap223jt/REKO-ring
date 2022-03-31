@@ -20,6 +20,7 @@ router.get('/:id', getArticle, (req,res) => {
 
 //Creating one
 router.post('/', async (req,res) => {
+    console.log(req);
     const article = new Article({
         description: req.body.description,
         product: req.body.product,
@@ -36,6 +37,7 @@ router.post('/', async (req,res) => {
 
 //Updating one
 router.patch('/:id', getArticle, async (req,res) => {
+
     if (req.body.description != null){
         res.article.description = req.body.description
     }
@@ -45,7 +47,11 @@ router.patch('/:id', getArticle, async (req,res) => {
     if (req.body.quantity != null){
         res.article.quantity = req.body.quantity
     }
-    
+    //only one comment gets inserted.....
+    console.log(req.body);
+    if (req.body.data != null){
+        res.article.comments = req.body.data;
+    }
     try {
         const updatedArticle = await res.article.save()
         res.json(updatedArticle)

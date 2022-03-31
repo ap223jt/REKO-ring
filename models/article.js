@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const comments = require('./comment');
 
 const articleSchema = new mongoose.Schema({
     description: String,
@@ -10,6 +11,10 @@ const articleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    facebookPostID: {
+        type: String,
+    },
+    comments: [comments]
 })
 
 module.exports = mongoose.model('Article', articleSchema);
