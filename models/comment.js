@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const subComment = require('./subComment');
+const mongoose = require('mongoose')
+const replies = require('./replies');
+
 
 const commentSchema = new mongoose.Schema({
     fbCommentID:  {
@@ -8,6 +9,5 @@ const commentSchema = new mongoose.Schema({
         unique: true
     },
     message: String,
-    replies: [subComment]
+    replies: [replies]
 })
-

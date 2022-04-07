@@ -28,7 +28,7 @@ window.fbAsyncInit = function () {
  */
 function statusChangeCallback(response) {
   // Called with the results from FB.getLoginStatus().
-  console.log("statusChangeCallback");
+
   console.log(response); // The current login status of the person.
   if (response.status === "connected") {
     // Logged into your webpage and Facebook.
@@ -60,7 +60,8 @@ function facebookLogout() {
 function testAPI() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
   console.log("Welcome!  Fetching your information.... ");
-  FB.api("/me", function (response) {
+  FB.api("https://graph.facebook.com/1338804626636796?fields=access_token&access_token=EAAoSp31q4foBAGb8pbeNHoY3ZBJh93ZBH10viZCGXZAyZAtZBfSZAuZArTtQMWq8ZBLTcuScaIWxhYZBWrqVgdGyH4XNsDePqfy8nmDZAcKoDzTDOjnQBn1ZB0AteLjbWcPkhrGfMDwHeLGh42vZBH4ciaosTjtdaUXSriYtFnNIsZCzmzTHpnCi8gQhBU3VQABJYu902aE3YXiZB5gaAZDZD", 
+  function (response) {
     console.log("Successful login for: " + response.name);
     console.log(response);
   });
@@ -97,39 +98,39 @@ function postArticle(message,articleID) {
 
 
 /**
- * gets all the comments of a FACEBOOK POST
+ * gets all the comments of a FACEBOOK POST and saves them on MONGODB comments
  * @param {number} fbPostID when postArticle generates a facebook post, that post gets an ID.. This is that facebook generated id
  * @param {number} articleID one articles ID from mongoDB db
  */
-function getArticleComments(fbPostID, articleID) {
+function updateCommentsDB(fbPostID, articleID) {
   FB.api(
     `${fbPostID}/comments?fields=message,comments{message,comments}`,
     'GET',
     {},
     function(res) {
+      let result = [];
       let data = {};
-      let commentData = {};
+      let commentData = [];
+      let jsonCommentData = {};
+
       for (let i = 0; i < res.data.length; i++){
         if (res.data[i].comments) {
           for (let k = 0; k < res.data[i].comments.data.length; k++){
-              commentData[k] = {
+              jsonCommentData = {
                 fbCommentID: res.data[i].comments.data[k].id,
                 message: res.data[i].comments.data[k].message
               }
+              commentData.push(jsonCommentData)
           }
-        } else commentData = {};
-
+        } else commentData = [];
         data = {
           fbCommentID: res.data[i].id,
-          articleID: articleID,
-          fbPostID: fbPostID,
           message: res.data[i].message,
           replies: commentData
         };
-        axios.patch("/articles/"+articleID,  {data:data})
-        .then((response) => {console.log(response)})
-        .catch((error) => {console.log(error)})
+        result.push(data);
       }
+      axios.patch("/articles/"+articleID,  {comments:result})
     }
   );
 }

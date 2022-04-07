@@ -8,4 +8,3 @@ const subComment = new mongoose.Schema({
     },
     message: String
 })
-

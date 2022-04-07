@@ -47,10 +47,8 @@ router.patch('/:id', getArticle, async (req,res) => {
     if (req.body.quantity != null){
         res.article.quantity = req.body.quantity
     }
-    //only one comment gets inserted.....
-    console.log(req.body);
-    if (req.body.data != null){
-        res.article.comments = req.body.data;
+    if (req.body.comments != null){
+        res.article.comments = req.body.comments;
     }
     try {
         const updatedArticle = await res.article.save()
