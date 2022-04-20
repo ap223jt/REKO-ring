@@ -36,3 +36,28 @@
 .comment {
     border-bottom: 2px solid green;
 }
+
+#login-popup {
+    border: 2px solid black;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 1001;
+    -webkit-transition: 0.5s;
+    overflow: auto;
+    transition: all 0.3s linear;
+    background-color: white;
+    padding: 20px;
+}
+
+.is_blurred {
+    filter: blur(5px);
+    -webkit-filter: blur(2px);
+    pointer-events: none;
+}

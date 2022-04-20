@@ -34,14 +34,16 @@ function statusChangeCallback(response) {
     // Logged into your webpage and Facebook.
     console.log("LOGGED IN");
     testAPI();
-    document.querySelector(".fb-login-button").style.display = "none";
-    document.querySelector("#logoutBtn").style.display = "block";
+    document.querySelector("main").classList.remove('is_blurred');
+    document.querySelector('#login-popup').style.display = 'none';
+    document.querySelector('#logoutBtn').style.display = 'block';
   } else {
     // Not logged into your webpage or we are unable to tell.
-    console.log("NOT LOGGED IN");
-    document.querySelector(".fb-login-button").style.display = "block";
-    document.querySelector("#logoutBtn").style.display = "none";
+    document.querySelector('main').removeEventListener('click',function() {
+      console.log(123);
+    });
 
+    console.log("NOT LOGGED IN");
   }
 }
 
@@ -60,7 +62,7 @@ function facebookLogout() {
 function testAPI() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
   console.log("Welcome!  Fetching your information.... ");
-  FB.api("https://graph.facebook.com/1338804626636796?fields=access_token&access_token=EAAoSp31q4foBAGb8pbeNHoY3ZBJh93ZBH10viZCGXZAyZAtZBfSZAuZArTtQMWq8ZBLTcuScaIWxhYZBWrqVgdGyH4XNsDePqfy8nmDZAcKoDzTDOjnQBn1ZB0AteLjbWcPkhrGfMDwHeLGh42vZBH4ciaosTjtdaUXSriYtFnNIsZCzmzTHpnCi8gQhBU3VQABJYu902aE3YXiZB5gaAZDZD", 
+  FB.api("/me?", 
   function (response) {
     console.log("Successful login for: " + response.name);
     console.log(response);

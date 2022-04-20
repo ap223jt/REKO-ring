@@ -130,6 +130,17 @@ function createCommentsMarkup(response, articleID) {
   allCommentsDiv.classList.add("comments");
   commentDiv.append(allCommentsDiv);
 
+
+
+  let embed = document.createElement('div');
+  embed.setAttribute('data-href', 'https://www.facebook.com/groups/1338804626636796/posts/1351943298656262/');
+  embed.setAttribute('data-width', '');
+  embed.setAttribute('data-numposts', '1');
+  embed.className.add('fb-comments')
+  commentDiv.append(embed)
+
+
+
   /* Create h3 Comments*/
   let h3 = document.createElement("h3");
   h3.innerHTML = "Kommentarer";
