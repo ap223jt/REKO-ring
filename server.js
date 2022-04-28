@@ -28,10 +28,14 @@ db.once("open", () => console.log("Connected to Database"));
 app.use(express.json());
 
 const articlesRouter = require("./routes/articles");
+const usersRouter = require("./routes/users");
+
 
 const { reset } = require("nodemon");
 const { log } = require("console");
 app.use("/articles", articlesRouter);
+app.use("/users", usersRouter);
+
 
 
 /**
@@ -41,14 +45,8 @@ app.use(express.static("views"));
 app.use(express.static("public"));
 
 /**
- * Start Server
+ * Start HTTPS Server
  */
-
-/*
-app.use('/', (req,res) => {
-    res.send('Hello from SSL Server');
-})
-*/
 
 const sslServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, 'cert','key.pem')),

@@ -2,16 +2,16 @@
 //hashtags separate the requests into different ones
 
 
-GET http://localhost:3000/articles
+GET https://localhost:3000/articles
 
 ###
 
-GET http://localhost:3000/articles/623319e2150a9e946279bea9
+GET https://localhost:3000/articles/623319e2150a9e946279bea9
 
 
 ###
 
-POST http://localhost:3000/articles
+POST https://localhost:3000/articles
 Content-Type: application/json
 
 {
@@ -22,17 +22,33 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/articles/6233652094293275ed704f34
+DELETE https://localhost:3000/articles/6233652094293275ed704f34
 
 
 ###
 
 
-PATCH http://localhost:3000/articles/6233652094293275ed704f34
+PATCH https://localhost:3000/articles/6233652094293275ed704f34
 Content-Type: application/json
 
 {
     "description": "Växjös Djurgård",
     "product": "Bruna Ägg",
     "quantity": 25
+}
+
+
+### USERS
+
+GET https://localhost:3000/users
+
+###
+
+POST https://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "Ant",
+    "fbUserId": "12565771",
+    "typeOfUser": "producent"
 }

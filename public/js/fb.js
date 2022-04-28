@@ -1,3 +1,4 @@
+
 window.fbAsyncInit = function () {
   FB.init({
     appId: 2835260340101626,
@@ -28,23 +29,44 @@ window.fbAsyncInit = function () {
  */
 function statusChangeCallback(response) {
   // Called with the results from FB.getLoginStatus().
-
   console.log(response); // The current login status of the person.
   if (response.status === "connected") {
     // Logged into your webpage and Facebook.
     console.log("LOGGED IN");
-    testAPI();
     document.querySelector("main").classList.remove('is_blurred');
     document.querySelector('#login-popup').style.display = 'none';
     document.querySelector('#logoutBtn').style.display = 'block';
+    getUserInfo();
   } else {
     // Not logged into your webpage or we are unable to tell.
-    document.querySelector('main').removeEventListener('click',function() {
-      console.log(123);
-    });
+    document.querySelector('main').removeEventListener('click',function() {});
 
     console.log("NOT LOGGED IN");
   }
+}
+window.onload = function() {
+  alert("hello!");
+}
+let checkedRadio = '';
+if (document.querySelector('#producentRadio').checked) checkedRadio = "producent";
+if (document.querySelector('#konsumentRadio').checked) checkedRadio = "konsument";
+localStorage.setItem('radio',checkedRadio)
+
+async function saveUserCreds(res) {
+  var itemValue = localStorage.getItem("radio");
+  console.log(itemValue);
+  console.log(checkedRadio);
+  try {
+    const response = await axios.post('/users', {
+      username: res.name,
+      fbUserId: res.id,
+      typeOfUser: checkedRadio
+    })
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+  
 }
 
 /**
@@ -59,16 +81,14 @@ function facebookLogout() {
   });
 }
 
-function testAPI() {
+function getUserInfo() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
-  console.log("Welcome!  Fetching your information.... ");
   FB.api("/me?", 
   function (response) {
     console.log("Successful login for: " + response.name);
-    console.log(response);
+    saveUserCreds(response);
   });
 }
-
 
 /**
  * post article to facebook
@@ -97,42 +117,3 @@ function postArticle(message,articleID) {
   );
 }
 
-
-
-/**
- * gets all the comments of a FACEBOOK POST and saves them on MONGODB comments
- * @param {number} fbPostID when postArticle generates a facebook post, that post gets an ID.. This is that facebook generated id
- * @param {number} articleID one articles ID from mongoDB db
- */
-function updateCommentsDB(fbPostID, articleID) {
-  FB.api(
-    `${fbPostID}/comments?fields=message,comments{message,comments}`,
-    'GET',
-    {},
-    function(res) {
-      let result = [];
-      let data = {};
-      let commentData = [];
-      let jsonCommentData = {};
-
-      for (let i = 0; i < res.data.length; i++){
-        if (res.data[i].comments) {
-          for (let k = 0; k < res.data[i].comments.data.length; k++){
-              jsonCommentData = {
-                fbCommentID: res.data[i].comments.data[k].id,
-                message: res.data[i].comments.data[k].message
-              }
-              commentData.push(jsonCommentData)
-          }
-        } else commentData = [];
-        data = {
-          fbCommentID: res.data[i].id,
-          message: res.data[i].message,
-          replies: commentData
-        };
-        result.push(data);
-      }
-      axios.patch("/articles/"+articleID,  {comments:result})
-    }
-  );
-}

@@ -27,87 +27,99 @@
 
 <body>
   <div id="fb-root"></div>
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/sv_SE/sdk.js#xfbml=1&version=v13.0&appId=2835260340101626&autoLogAppEvents=1" nonce="fdUoR2CN"></script>
+  <script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/sv_SE/sdk.js#xfbml=1&version=v13.0&appId=2835260340101626&autoLogAppEvents=1"
+    nonce="fdUoR2CN"></script>
 
-    <div id="login-popup">
-      <div id="welcome-text" class="mb-3">
-        <h3>Välkommen till Reko-rings administrationspanel</h3>
-        <img src="pics/logo-nobg100.png" alt="reko-ring logo">
-      </div>
-      <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with" data-layout="rounded"
-        data-auto-logout-link="false" data-use-continue-as="true" onlogin='window.location="/";'>
+  <div id="login-popup">
+    <div id="welcome-text" class="mb-3">
+      <h3>Välkommen till Reko-rings administrationspanel</h3>
+      <img src="pics/logo-nobg100.png" alt="reko-ring logo">
+    </div>
+
+    <div id="login-as" class="mb-3">
+      <h4>Logga in som:</h4>
+      <div class="btn-group">
+        <input type="radio" class="btn-check" name="type" id="producentRadio"/>
+        <label class="btn btn-outline-success" for="producentRadio">Producent</label>
+    
+        <input type="radio" class="btn-check" name="type" id="konsumentRadio" checked/>
+        <label class="btn btn-outline-success" for="konsumentRadio">Konsument</label>
       </div>
     </div>
 
-    <main class="is_blurred">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li>
-                <hr class="dropdown-divider" />
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-          </li>
-        </ul>
-        <div id="logoutBtn" style="display: none;">
-          <button onclick="facebookLogout()">logout</button>
-        </div>
-      </div>
+    <div class="fb-login-button" data-width="" data-size="large" data-button-type="login_with" data-layout="rounded"
+      data-auto-logout-link="false" data-use-continue-as="true" onlogin='window.location="/";'>
     </div>
-  </nav>
+  </div>
 
-  
-  <form action="/create-article" method="POST">
-    <div class="addProduct red">
-      <div class="mb-3">
-        <label for="descriptionText" class="form-label">Valfri beskrivande text</label>
-        <textarea class="form-control" id="description" rows="3" placeholder="Växjös Djurgård..."
-          name="description"></textarea>
+  <main class="is_blurred">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Arkiv</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Dropdown
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li>
+                  <hr class="dropdown-divider" />
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <div id="logoutBtn" style="display: none;">
+            <button onclick="facebookLogout()">logout</button>
+          </div>
+        </div>
       </div>
+    </nav>
 
-      <div class="row">
-        <div class="col-md-8">
-          <label for="productNamn" class="form-label">Produkt namn</label>
-          <input type="text" class="form-control" id="product" placeholder="Vita ägg..." name="product" />
+
+    <form action="/create-article" method="POST">
+      <div class="addProduct red">
+        <div class="mb-3">
+          <label for="descriptionText" class="form-label">Valfri beskrivande text</label>
+          <textarea class="form-control" id="description" rows="3" placeholder="Växjös Djurgård..."
+            name="description"></textarea>
         </div>
 
-        <div class="col-md-4">
-          <label for="quantity" class="form-label">Antal</label>
-          <input type="number" class="form-control" id="quantity" name="quantity" />
+        <div class="row">
+          <div class="col-md-8">
+            <label for="productNamn" class="form-label">Produkt namn</label>
+            <input type="text" class="form-control" id="product" placeholder="Vita ägg..." name="product" />
+          </div>
+
+          <div class="col-md-4">
+            <label for="quantity" class="form-label">Antal</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" />
+          </div>
         </div>
+
+        <input type="submit" id="submitArticle" class="mt-3" />
       </div>
+    </form>
 
-      <input type="submit" id="submitArticle" class="mt-3" />
-    </div>
-  </form>
-  
 
-  <!-- DATABASE INFORMATION GETS DISPLAYED HERE -->
-  <div id="articles"></div>
-  <iframe src="http://www.facebook.com/plugins/comments.php?href=http://techcrunch.com/2014/09/17/life-is-tough/" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100%; height:3806px;" allowTransparency="true"></iframe></html>
+    <!-- DATABASE INFORMATION GETS DISPLAYED HERE -->
+    <div id="articles"></div>
+    <iframe src="http://www.facebook.com/plugins/comments.php?href=http://techcrunch.com/2014/09/17/life-is-tough/"
+      scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100%; height:3806px;"
+      allowTransparency="true"></iframe>
+
+</html>
