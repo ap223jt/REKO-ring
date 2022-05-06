@@ -44,11 +44,15 @@ GET https://localhost:3000/users
 
 ###
 
+GET https://localhost:3000/dashboard
+
+
+### DASBHOARD
+
 POST https://localhost:3000/users
 Content-Type: application/json
 
 {
-    "username": "Ant",
-    "fbUserId": "12565771",
-    "typeOfUser": "producent"
+    "username": "producent",
+    "fbUserId": "asd"
 }

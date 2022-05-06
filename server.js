@@ -10,11 +10,8 @@ const fs = require('fs');
 const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const Article = require("./models/article")
 
-
-
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /**
  * Connect to mongoDB Database
@@ -27,14 +24,16 @@ db.once("open", () => console.log("Connected to Database"));
 
 app.use(express.json());
 
-const articlesRouter = require("./routes/articles");
-const usersRouter = require("./routes/users");
+/**
+ * Routes
+ */
 
 
-const { reset } = require("nodemon");
-const { log } = require("console");
-app.use("/articles", articlesRouter);
-app.use("/users", usersRouter);
+const articlesRouter = require("./routes/API/articles");
+const usersRouter = require("./routes/API/users");
+
+app.use("/API/articles", articlesRouter);
+app.use("/API/users", usersRouter);
 
 
 
@@ -48,7 +47,7 @@ app.use(express.static("public"));
  * Start HTTPS Server
  */
 
-const sslServer = https.createServer({
+ const sslServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, 'cert','key.pem')),
     cert: fs.readFileSync(path.join(__dirname, 'cert','cert.pem'))
 },app)
@@ -56,24 +55,22 @@ const sslServer = https.createServer({
 sslServer.listen(3000, () => console.log("Server Started"));
 
 /**
- * POST data from form create-article
+ * Form POST to DB
  */
+const Article = require('./models/article')
 
 app.post("/create-article", (req, res) => {
+    console.log(req.body);
     try {
         const saveArticle = new Article(req.body);
-        saveArticle.save()
+        saveArticle.save();
+        res.redirect('/');
     } catch (error) {
         res.status(400).json({message: err.message}) // 400 = users input misstake
     }
 });
 
-app.put("/article/:id", async(req, res) => {
-    let id = req.params.id;
-    Article.findByIdAndUpdate(id, {
-        facebookPostID: req.body.facebookID
-    }, function(err,response) {
-        if(err) res.status(400).json({message: err.message})
-    })
-   console.log(req.params.id);
+
+app.get("/:id", (req, res) => {
+        res.sendFile(path.join(__dirname, './views', '/farm.html'));
 });

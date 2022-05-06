@@ -1,7 +1,6 @@
 const express = require('express');
-const { append } = require('express/lib/response');
 const router = express.Router()
-const Article = require('../models/article')
+const Article = require('../../models/article')
 
 //Getting all
 router.get('/', async (req,res) => {
@@ -18,13 +17,24 @@ router.get('/:id', getArticle, (req,res) => {
     res.send(res.article)
 })
 
+router.get('/product/:id',async (req,res) => {
+    let article
+    try {
+        article = await Article.find({"products._id":req.params.id})
+        if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
+        res.json(article)
+    } catch (err) {
+        return res.status(500).json({message: err.message})
+    }
+})
+
 //Creating one
 router.post('/', async (req,res) => {
-    console.log(req);
+    console.log(req.body);
     const article = new Article({
+        farmName: req.body.farmName,
         description: req.body.description,
-        product: req.body.product,
-        quantity: req.body.quantity
+        products: req.body.products
     })
 
     try {
@@ -72,7 +82,7 @@ router.delete('/:id',getArticle, async (req,res) => {
 async function getArticle(req, res, next){
     let article
     try {
-        article = await Article.findById(req.params.id)
+        article = await Article.findById(req.params.id);
         if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
     } catch (err) {
         return res.status(500).json({message: err.message})

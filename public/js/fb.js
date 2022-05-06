@@ -1,4 +1,3 @@
-
 window.fbAsyncInit = function () {
   FB.init({
     appId: 2835260340101626,
@@ -16,7 +15,7 @@ window.fbAsyncInit = function () {
 /**
  *   Called when a person is finished with the Login Button.
  */
- function checkLoginState() {
+function checkLoginState() {
   FB.getLoginStatus(function (response) {
     // See the onlogin handler
     statusChangeCallback(response);
@@ -24,7 +23,7 @@ window.fbAsyncInit = function () {
 }
 
 /**
- * @param {*} response 
+ * @param {*} response
  * Check if user logged in
  */
 function statusChangeCallback(response) {
@@ -33,40 +32,28 @@ function statusChangeCallback(response) {
   if (response.status === "connected") {
     // Logged into your webpage and Facebook.
     console.log("LOGGED IN");
-    document.querySelector("main").classList.remove('is_blurred');
-    document.querySelector('#login-popup').style.display = 'none';
-    document.querySelector('#logoutBtn').style.display = 'block';
+    document.querySelector("main").classList.remove("is_blurred");
+    document.querySelector("#login-popup").style.display = "none";
+    document.querySelector("#logoutBtn").style.display = "block";
     getUserInfo();
   } else {
     // Not logged into your webpage or we are unable to tell.
-    document.querySelector('main').removeEventListener('click',function() {});
+    document.querySelector("main").removeEventListener("click", function () {});
 
     console.log("NOT LOGGED IN");
   }
 }
-window.onload = function() {
-  alert("hello!");
-}
-let checkedRadio = '';
-if (document.querySelector('#producentRadio').checked) checkedRadio = "producent";
-if (document.querySelector('#konsumentRadio').checked) checkedRadio = "konsument";
-localStorage.setItem('radio',checkedRadio)
 
 async function saveUserCreds(res) {
-  var itemValue = localStorage.getItem("radio");
-  console.log(itemValue);
-  console.log(checkedRadio);
   try {
-    const response = await axios.post('/users', {
+    const response = await axios.post("/API/users", {
       username: res.name,
       fbUserId: res.id,
-      typeOfUser: checkedRadio
-    })
+    });
     console.log(response);
   } catch (error) {
     console.log(error);
   }
-  
 }
 
 /**
@@ -83,8 +70,7 @@ function facebookLogout() {
 
 function getUserInfo() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
-  FB.api("/me?", 
-  function (response) {
+  FB.api("/me?", function (response) {
     console.log("Successful login for: " + response.name);
     saveUserCreds(response);
   });
@@ -97,23 +83,32 @@ function getUserInfo() {
  * @param {number} articleID the id of the article that will get posted, used to notice the user that the post has been created.
  */
 
-function postArticle(message,articleID) {
+function postArticle(message, articleID) {
   FB.api(
-    '/1338804626636796/feed',
-    'POST',
-    {"message": message},
-    function(res) {
+    "/1338804626636796/feed",
+    "POST",
+    { message: message },
+    function (res) {
       console.log(res.error);
-      if (res != res.error){
-        document.getElementById(articleID).getElementsByClassName('postStatus')[0].innerHTML = 'Ditt facebook inlägg har nu skapats!';
+      if (res != res.error) {
+        document
+          .getElementById(articleID)
+          .getElementsByClassName("postStatus")[0].innerHTML =
+          "Ditt facebook inlägg har nu skapats!";
 
-        axios.put("/article/"+articleID,  {facebookID: res.id}).then((response) => {console.log(response)})
+        axios
+          .put("/article/" + articleID, { facebookID: res.id })
+          .then(response => {
+            console.log(response);
+          });
       }
       if (res.error) {
-        document.getElementById(articleID).getElementsByClassName('postStatus')[0].innerHTML = 'Något gick fel, ditt inlägg har inte skapats. Har du loggat in?';
+        document
+          .getElementById(articleID)
+          .getElementsByClassName("postStatus")[0].innerHTML =
+          "Något gick fel, ditt inlägg har inte skapats. Har du loggat in?";
         console.log(res.error);
       }
     }
   );
 }
-
