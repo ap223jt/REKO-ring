@@ -1,7 +1,6 @@
 const express = require('express');
-const { append } = require('express/lib/response');
 const router = express.Router()
-const Article = require('../models/article')
+const Article = require('../../models/article')
 
 //Getting all
 router.get('/', async (req,res) => {
@@ -20,11 +19,9 @@ router.get('/:id', getArticle, (req,res) => {
 
 //Creating one
 router.post('/', async (req,res) => {
-    console.log(req);
     const article = new Article({
-        description: req.body.description,
-        product: req.body.product,
-        quantity: req.body.quantity
+        farmName: req.body.farmName,
+        description: req.body.description
     })
 
     try {
@@ -37,18 +34,8 @@ router.post('/', async (req,res) => {
 
 //Updating one
 router.patch('/:id', getArticle, async (req,res) => {
-
     if (req.body.description != null){
         res.article.description = req.body.description
-    }
-    if (req.body.product != null){
-        res.article.product = req.body.product
-    }
-    if (req.body.quantity != null){
-        res.article.quantity = req.body.quantity
-    }
-    if (req.body.comments != null){
-        res.article.comments = req.body.comments;
     }
     try {
         const updatedArticle = await res.article.save()
@@ -72,12 +59,11 @@ router.delete('/:id',getArticle, async (req,res) => {
 async function getArticle(req, res, next){
     let article
     try {
-        article = await Article.findById(req.params.id)
+        article = await Article.findById(req.params.id);
         if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
     } catch (err) {
         return res.status(500).json({message: err.message})
     }
-
     res.article = article
     next()
 }

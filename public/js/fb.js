@@ -15,7 +15,7 @@ window.fbAsyncInit = function () {
 /**
  *   Called when a person is finished with the Login Button.
  */
- function checkLoginState() {
+function checkLoginState() {
   FB.getLoginStatus(function (response) {
     // See the onlogin handler
     statusChangeCallback(response);
@@ -23,27 +23,33 @@ window.fbAsyncInit = function () {
 }
 
 /**
- * @param {*} response 
+ * @param {*} response
  * Check if user logged in
  */
 function statusChangeCallback(response) {
   // Called with the results from FB.getLoginStatus().
-
-  console.log(response); // The current login status of the person.
   if (response.status === "connected") {
     // Logged into your webpage and Facebook.
-    console.log("LOGGED IN");
-    testAPI();
-    document.querySelector("main").classList.remove('is_blurred');
-    document.querySelector('#login-popup').style.display = 'none';
-    document.querySelector('#logoutBtn').style.display = 'block';
+    document.querySelector("main").classList.remove("is_blurred");
+    document.querySelector("#login-popup").style.display = "none";
+    document.querySelector("#logoutBtn").style.display = "block";
+    getUserInfo();
   } else {
     // Not logged into your webpage or we are unable to tell.
-    document.querySelector('main').removeEventListener('click',function() {
-      console.log(123);
-    });
-
+    document.querySelector("main").removeEventListener("click", function () {});
     console.log("NOT LOGGED IN");
+  }
+}
+
+async function saveUserCreds(res) {
+  try {
+    const response = await axios.post("/API/users", {
+      username: res.name,
+      fbUserId: res.id,
+    });
+    console.log(response);
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -59,16 +65,13 @@ function facebookLogout() {
   });
 }
 
-function testAPI() {
+function getUserInfo() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
-  console.log("Welcome!  Fetching your information.... ");
-  FB.api("/me?", 
-  function (response) {
-    console.log("Successful login for: " + response.name);
-    console.log(response);
+  FB.api("/me?", function (response) {
+    window.localStorage.setItem('userID', response.id);
+    saveUserCreds(response);
   });
 }
-
 
 /**
  * post article to facebook
@@ -77,62 +80,32 @@ function testAPI() {
  * @param {number} articleID the id of the article that will get posted, used to notice the user that the post has been created.
  */
 
-function postArticle(message,articleID) {
+function postArticle(message, articleID) {
   FB.api(
-    '/1338804626636796/feed',
-    'POST',
-    {"message": message},
-    function(res) {
+    "/1338804626636796/feed",
+    "POST",
+    { message: message },
+    function (res) {
       console.log(res.error);
-      if (res != res.error){
-        document.getElementById(articleID).getElementsByClassName('postStatus')[0].innerHTML = 'Ditt facebook inlägg har nu skapats!';
+      if (res != res.error) {
+        document
+          .getElementById(articleID)
+          .getElementsByClassName("postStatus")[0].innerHTML =
+          "Ditt facebook inlägg har nu skapats!";
 
-        axios.put("/article/"+articleID,  {facebookID: res.id}).then((response) => {console.log(response)})
+        axios
+          .put("/article/" + articleID, { facebookID: res.id })
+          .then(response => {
+            console.log(response);
+          });
       }
       if (res.error) {
-        document.getElementById(articleID).getElementsByClassName('postStatus')[0].innerHTML = 'Något gick fel, ditt inlägg har inte skapats. Har du loggat in?';
+        document
+          .getElementById(articleID)
+          .getElementsByClassName("postStatus")[0].innerHTML =
+          "Något gick fel, ditt inlägg har inte skapats. Har du loggat in?";
         console.log(res.error);
       }
-    }
-  );
-}
-
-
-
-/**
- * gets all the comments of a FACEBOOK POST and saves them on MONGODB comments
- * @param {number} fbPostID when postArticle generates a facebook post, that post gets an ID.. This is that facebook generated id
- * @param {number} articleID one articles ID from mongoDB db
- */
-function updateCommentsDB(fbPostID, articleID) {
-  FB.api(
-    `${fbPostID}/comments?fields=message,comments{message,comments}`,
-    'GET',
-    {},
-    function(res) {
-      let result = [];
-      let data = {};
-      let commentData = [];
-      let jsonCommentData = {};
-
-      for (let i = 0; i < res.data.length; i++){
-        if (res.data[i].comments) {
-          for (let k = 0; k < res.data[i].comments.data.length; k++){
-              jsonCommentData = {
-                fbCommentID: res.data[i].comments.data[k].id,
-                message: res.data[i].comments.data[k].message
-              }
-              commentData.push(jsonCommentData)
-          }
-        } else commentData = [];
-        data = {
-          fbCommentID: res.data[i].id,
-          message: res.data[i].message,
-          replies: commentData
-        };
-        result.push(data);
-      }
-      axios.patch("/articles/"+articleID,  {comments:result})
     }
   );
 }

@@ -2,41 +2,6 @@
     border: 2px solid red;
 }
 
-.addProduct{
-    width: 40%;
-    margin: 0 auto;
-}
-
-#articles {
-    border: 2px solid red;
-    display: flex;
-    justify-content: space-between;
-}
-
-.article {
-    border: 2px solid blue;
-    width: 20%;
-}
-
-.info ul li span {
-    padding-right: 25px;
-}
-
-.comment p {
-    border: 2px solid rgb(17, 0, 255);
-    border-radius: 30px;
-    padding: 10px;
-}
-
-.replie {
-    width: 80%;
-    margin-left: auto;
-}
-
-.comment {
-    border-bottom: 2px solid green;
-}
-
 #login-popup {
     border: 2px solid black;
     width: 30%;
@@ -61,3 +26,76 @@
     -webkit-filter: blur(2px);
     pointer-events: none;
 }
+
+nav {
+    border-bottom: 1px solid black;
+}
+
+/* ------------- ARTICLES -------------- */
+
+
+.addArticle{
+    width: 40%;
+    margin: 0 auto;
+    padding:25px;
+}
+
+#articles {
+    display: flex;
+    justify-content:center;
+    flex-wrap: wrap;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.article {
+    border: 2px solid blue;
+    width: 20%;
+    margin-right: 20px;
+    text-align: center;
+}
+
+/* ------------- Create.HTML -------------- */
+.smallText {
+    font-size: 12px;
+    font-style: italic;
+}
+
+
+#addMoreProducts {
+    border: 2px solid black;
+    width: fit-content;
+    padding: 0px 3px;
+    margin: 15px auto 0px auto;
+    cursor: pointer;
+}
+
+.addProduct {
+    border: 1px solid black;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+
+/* -------------- FARM.HTML ----------------*/
+
+.cartHeader{
+    border-bottom: 1px solid black;
+}
+
+.cartHeader p {
+    border-right: 1px solid black;
+}
+
+.cartProduct {
+    border-bottom: 1px solid rgb(187, 187, 187);
+}
+
+#cartSubmit {
+    border: 1px solid red;
+    width: 20%;
+    margin: 0 0 0 auto;
+}
+
+
+/* -------------- myOrders.html ----------------*/

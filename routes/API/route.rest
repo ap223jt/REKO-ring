@@ -1,0 +1,58 @@
+// TEST MY REST API WITH REST CLIENT EXTENSION, SAME ASS POSTMAN BUT IN VSC
+//hashtags separate the requests into different ones
+
+
+GET https://localhost:3000/articles
+
+###
+
+GET https://localhost:3000/articles/623319e2150a9e946279bea9
+
+
+###
+
+POST https://localhost:3000/articles
+Content-Type: application/json
+
+{
+    "description": "Alvestas Djurgård",
+    "product": "Lamm",
+    "quantity": 5
+}
+
+###
+
+DELETE https://localhost:3000/articles/6233652094293275ed704f34
+
+
+###
+
+
+PATCH https://localhost:3000/articles/6233652094293275ed704f34
+Content-Type: application/json
+
+{
+    "description": "Växjös Djurgård",
+    "product": "Bruna Ägg",
+    "quantity": 25
+}
+
+
+### USERS
+
+GET https://localhost:3000/users
+
+###
+
+GET https://localhost:3000/dashboard
+
+
+### DASBHOARD
+
+POST https://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "producent",
+    "fbUserId": "asd"
+}
