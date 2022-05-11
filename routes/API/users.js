@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
-const jwt = require("jsonwebtoken");
 
 //Getting all
 router.get("/", async (req, res) => {
@@ -33,9 +32,6 @@ router.post("/", async (req, res) => {
         res.status(400).json({ message: err.message }); // 400 = users input misstake
       }
   }
-  //Create and assign a token
-  const token = jwt.sign({_id: user._id, isAdmin: user.isAdmin},process.env.TOKEN_SECRET);
-  res.header('auth-token',token).send(token);
 });
 
 //Updating one
@@ -53,20 +49,6 @@ router.patch("/:id", getUser, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-
-
-/**
- * Deleting one
-router.delete("/:id", getUser, async (req, res) => {
-  try {
-    await res.user.remove();
-    res.json({ message: "User deleted!" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
- */
-
 
 async function getUser(req, res, next) {
   let user;

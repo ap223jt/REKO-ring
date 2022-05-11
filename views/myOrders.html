@@ -17,10 +17,10 @@
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-  <script src="/js/farm.js" type="text/javascript" defer></script>
+  <script src="/js/myOrders.js" type="text/javascript" defer></script>
   <script src="/js/fb.js" type="text/javascript" defer></script>
 
-  <title>Reko-ring</title>
+  <title>Reko-ring - Mina beställningar</title>
   <link rel="icon" type="image/x-icon" href="pics/logo-nobgfavic.png">
 
 </head>
@@ -81,17 +81,16 @@
     </nav>
 
     <div class="d-flex flex-column align-items-center red">
-      <div class="text-center">
-        <h3 id="farmName"></h3>
-        <p id="farmDesc"></p>
+      <div>
+        <h3>Mina aktiva orders:</h3>
+        <div class="d-flex flex-row" id="activeOrders"></div>
       </div>
 
-      <div class="d-flex flex-row justify-content-evenly container" id="productCart">
-        <div id="products" class="col-md-auto"></div>
+      <div>
+        <h3>Äldre ordrar:</h3>
+        <div class="d-flex flex-row" id="oldOrders"></div>
       </div>
+      
     </div>
 
 </html>
-
-
-

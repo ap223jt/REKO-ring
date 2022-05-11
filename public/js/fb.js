@@ -28,10 +28,8 @@ function checkLoginState() {
  */
 function statusChangeCallback(response) {
   // Called with the results from FB.getLoginStatus().
-  console.log(response); // The current login status of the person.
   if (response.status === "connected") {
     // Logged into your webpage and Facebook.
-    console.log("LOGGED IN");
     document.querySelector("main").classList.remove("is_blurred");
     document.querySelector("#login-popup").style.display = "none";
     document.querySelector("#logoutBtn").style.display = "block";
@@ -39,7 +37,6 @@ function statusChangeCallback(response) {
   } else {
     // Not logged into your webpage or we are unable to tell.
     document.querySelector("main").removeEventListener("click", function () {});
-
     console.log("NOT LOGGED IN");
   }
 }
@@ -71,7 +68,7 @@ function facebookLogout() {
 function getUserInfo() {
   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
   FB.api("/me?", function (response) {
-    console.log("Successful login for: " + response.name);
+    window.localStorage.setItem('userID', response.id);
     saveUserCreds(response);
   });
 }

@@ -5,27 +5,6 @@ const articleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: String,
-    products: [{
-        pName: {
-            type: String,
-            required: true
-        },
-        pQuantity: {
-            type: String,
-            required: true
-        },
-        pDesc: {
-            type: String,
-        },
-        pImg: {
-            type: String
-        },
-        pPrice: {
-            type: String,
-            required: true
-        }
-    }]
+    description: String
 })
-
 module.exports = mongoose.model('Article', articleSchema);

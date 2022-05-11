@@ -17,24 +17,11 @@ router.get('/:id', getArticle, (req,res) => {
     res.send(res.article)
 })
 
-router.get('/product/:id',async (req,res) => {
-    let article
-    try {
-        article = await Article.find({"products._id":req.params.id})
-        if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
-        res.json(article)
-    } catch (err) {
-        return res.status(500).json({message: err.message})
-    }
-})
-
 //Creating one
 router.post('/', async (req,res) => {
-    console.log(req.body);
     const article = new Article({
         farmName: req.body.farmName,
-        description: req.body.description,
-        products: req.body.products
+        description: req.body.description
     })
 
     try {
@@ -47,18 +34,8 @@ router.post('/', async (req,res) => {
 
 //Updating one
 router.patch('/:id', getArticle, async (req,res) => {
-
     if (req.body.description != null){
         res.article.description = req.body.description
-    }
-    if (req.body.product != null){
-        res.article.product = req.body.product
-    }
-    if (req.body.quantity != null){
-        res.article.quantity = req.body.quantity
-    }
-    if (req.body.comments != null){
-        res.article.comments = req.body.comments;
     }
     try {
         const updatedArticle = await res.article.save()
@@ -87,7 +64,6 @@ async function getArticle(req, res, next){
     } catch (err) {
         return res.status(500).json({message: err.message})
     }
-
     res.article = article
     next()
 }

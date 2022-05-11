@@ -41,14 +41,17 @@ nav {
 }
 
 #articles {
-    border: 2px solid red;
     display: flex;
-    justify-content: space-around;
+    justify-content:center;
+    flex-wrap: wrap;
+    width: 80%;
+    margin: 0 auto;
 }
 
 .article {
     border: 2px solid blue;
     width: 20%;
+    margin-right: 20px;
     text-align: center;
 }
 
@@ -72,3 +75,27 @@ nav {
     padding: 5px;
     margin-bottom: 10px;
 }
+
+
+/* -------------- FARM.HTML ----------------*/
+
+.cartHeader{
+    border-bottom: 1px solid black;
+}
+
+.cartHeader p {
+    border-right: 1px solid black;
+}
+
+.cartProduct {
+    border-bottom: 1px solid rgb(187, 187, 187);
+}
+
+#cartSubmit {
+    border: 1px solid red;
+    width: 20%;
+    margin: 0 0 0 auto;
+}
+
+
+/* -------------- myOrders.html ----------------*/

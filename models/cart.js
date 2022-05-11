@@ -1,13 +1,9 @@
 const mongoose = require("mongoose");
 
-const articleSchema = new mongoose.Schema({
-  userId: {
+const cartSchema = new mongoose.Schema({
+  userID: {
     type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
+    required: true
   },
   articleID: {
     type: String,
@@ -15,7 +11,7 @@ const articleSchema = new mongoose.Schema({
   },
   products: [
     {
-      pName: {
+      pID: {
         type: String,
         required: true,
       },
@@ -29,6 +25,11 @@ const articleSchema = new mongoose.Schema({
       },
     },
   ],
+  acceptedByFarm : {
+    type: Boolean,
+    default: false,
+    required: true
+  }
 });
 
-module.exports = mongoose.model("Article", articleSchema);
+module.exports = mongoose.model("Cart", cartSchema);

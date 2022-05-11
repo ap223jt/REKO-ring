@@ -12,15 +12,19 @@
     let productContainer = document.querySelector("#addProducts");
     let index = document.querySelectorAll('#addProducts .container').length;
     appendHTML = `<div class="row">
-                      <div class="col-md-8">
+                      <div class="col-md-6">
                         <label for="productNamn" class="form-label">Produkt namn</label>
                         <input type="text" class="form-control" id="product" placeholder="Vita ägg 24st/pack" name="products[${index}][pName]" required/>
                       </div>
 
-                      <div class="col-md-4">
+                      <div class="col-md-3">
                         <label for="quantity" class="form-label">Antal pack/liter/vikt</label>
                         <input type="number" class="form-control" id="quantity" name="products[${index}][pQuantity]" required/>
                       </div>
+                      <div class="col-md-3">
+                        <label for="quantity" class="form-label">Pris</label>
+                        <input type="number" class="form-control" id="price" name="products[${index}][pPrice]" step=".01" required/>
+                    </div>
                     </div>
 
                     <div class="row">
