@@ -55,8 +55,8 @@ const sslServer = https.createServer(
   },
   app
 );
-
-sslServer.listen(3000, () => console.log("Server Started"));
+const port = process.env.PORT || 3000;
+sslServer.listen(port, () => console.log("Server Started"));
 
 /**
  * Form POST to DB
