@@ -28,14 +28,14 @@ app.use(express.json());
  * Routes
  */
 
-const articlesRouter = require("./routes/API/articles");
+const farmRouter = require("./routes/API/farms");
 const usersRouter = require("./routes/API/users");
-const productsRouter = require("./routes/API/products");
+const articlesRouter = require("./routes/API/articles");
 const cartsRouter = require("./routes/API/carts");
 
-app.use("/API/articles", articlesRouter);
+app.use("/API/farms", farmRouter);
 app.use("/API/users", usersRouter);
-app.use("/API/products", productsRouter);
+app.use("/API/articles", articlesRouter);
 app.use("/API/carts", cartsRouter);
 
 /**
@@ -61,29 +61,32 @@ sslServer.listen(3000, () => console.log("Server Started"));
 /**
  * Form POST to DB
  */
+const Farm = require("./models/farm");
 const Article = require("./models/article");
-const Product = require("./models/product");
 const Cart = require("./models/cart");
-const jwt = require("jsonwebtoken");
 
-app.post("/create-article", (req, res) => {
-    console.log(req.user);
+app.post("/edit-profile", async (req, res) => {
+  let farm;
   try {
-    const saveArticle = new Article(req.body);
-    saveArticle.save();
-
-    console.log(saveArticle._id);
-    for (let i = 0; i < req.body.products.length; i++) {
-      const saveProduct = new Product({
-        articleID: saveArticle._id,
-        pName: req.body.products[i].pName,
-        pQuantity: req.body.products[i].pQuantity,
-        pDesc: req.body.products[i].pDesc,
-        pImg: req.body.products[i].pImg,
-        pPrice: req.body.products[i].pPrice,
-      });
-      saveProduct.save();
+    //check if there is a Farm with same fbUserID, if there isnt it inserts, if there is a record in db it updates it
+    farm = await Farm.find({ fbUserID: req.body.fbUserID });
+    if (farm.length <= 0) {
+      const savedFarm = new Farm(req.body);
+      savedFarm.save();
+    } else {
+      await Farm.findOneAndUpdate(req.body);
     }
+    res.redirect("./profil.html");
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/create-article", async (req, res) => {
+  try {
+    console.log(req.body);
+    const savedFarm = await new Article(req.body);
+    savedFarm.save();
     res.redirect("/");
   } catch (error) {
     res.status(400).json({ message: error.message }); // 400 = users input misstake
@@ -104,4 +107,31 @@ app.post("/completed-cart", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message }); // 400 = users input misstake
   }
+});
+
+app.post("/change-orderstatus", async (req, res) => {
+  try {
+    await Cart.findOneAndUpdate({_id:req.body.cartID},{orderStatus:req.body.orderStatus});
+    res.redirect("./farmOrders.html");
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+});
+
+const XLSX = require('xlsx');
+
+app.post("/export-xls", async (req, res) => {
+  console.log(req.body.export);
+  const workSheet = XLSX.utils.json_to_sheet(req.body.export);
+  const workBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workBook,workSheet,"user_bookings");
+
+  //generate buffer
+  XLSX.write(workBook,{bookType: 'xlsx', type:"buffer"});
+
+  //binary string
+  XLSX.write(workBook,{bookType: 'xlsx', type:"binary"});
+
+  //download
+  XLSX.writeFile(workBook,"user_bookings.xlsx");
 });

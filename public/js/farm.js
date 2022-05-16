@@ -1,28 +1,22 @@
 let baseUrl = document.URL.split("/");
 var lastSegment = baseUrl.pop() || baseUrl.pop(); // handle potential trailing slash
-
+console.log(lastSegment);
 (async function () {
   try {
     const res = await axios.get("/API/articles/" + lastSegment);
-    const res2 = await axios.get("/API/products/articleid/" + lastSegment);
-    createWholeMarkup(res.data, res2.data);
+    createWholeMarkup(res.data);
   } catch (error) {
     console.error(error);
   }
 })();
 
-function createWholeMarkup(resFarmInfo, resProductInfo) {
+async function createWholeMarkup(resProductInfo) {
+
+    /* Get Farm name and description of the products */
+  getFarmInfo(resProductInfo);
   let productsDiv = document.getElementById("products");
-  document.getElementById("farmName").innerHTML = resFarmInfo.farmName;
-  document.getElementById("farmDesc").innerHTML = resFarmInfo.description;
-
+  resProductInfo = resProductInfo.products;
   for (let i = 0; i < resProductInfo.length; i++) {
-    /* All the products wrapper inside form
-     let pForm = document.createElement("form");
-     pForm.setAttribute("action", "#");
-     productsDiv.append(pForm);
-
-*/
     /* Create one div per product inside form */
     let oneProduct = document.createElement("div");
     oneProduct.classList.add("product");
@@ -35,22 +29,22 @@ function createWholeMarkup(resFarmInfo, resProductInfo) {
 }
 
 function createCard(product, oneProductDiv) {
-  if (product.pImg == "") product.pImg = "/pics/no-image.jpg";
+  if (product.pImg == "") product.pImg = "no-image.jpg";
   markupHTML = `<div class="card mb-3" style="max-width: 540px;">
                           <div class="row g-0">
                             <div class="col-md-4">
-                              <img src="${product.pImg}" class="img-fluid rounded-start" alt="image of the product">
+                              <img src="../pics/${product.pImg}" class="img-fluid rounded-start articleImg" alt="image of the product">
                             </div>
                             <div class="col-md-8">
                               <div class="card-body text-center">
                                 <h5 class="card-title">${product.pName}</h5>
                                 <p class="card-text">${product.pDesc}</p>
                                 <div class="d-flex justify-content-around">
-                                  <p class="card-text"><b>Pris:</b> ${product.pPrice}</p>
-                                  <p class="card-text"><b>Antal i lager:</b> ${product.pQuantity}</p>
+                                  <p class="card-text"><b>Pris:</b> ${product.pPrice + ':-'}</p>
+                                  <p class="card-text"><b>Antal i lager:</b> ${product.pQuantity + 'st'}</p>
                                 </div>
                                 <div class="d-flex justify-content-around">
-                                <input type="number" class="form-control" id="quantity" name="cart[][pQuantity]" min="1" max="${product.pQuantity}" required/>
+                                <input type="number" class="form-control" id="quantity" name="cart[][pQuantity]" min="1" max="${product.pQuantity}" value="1" required/>
                                 <button class="cart">Lägg till i kundvagn</button>
                                 </div>
                               </div>
@@ -62,10 +56,20 @@ function createCard(product, oneProductDiv) {
     document.querySelectorAll(".cart")[i].addEventListener("click", addToCart);
 }
 
+async function getFarmInfo(resProductInfo){
+  try {
+    const resFarmInfo = await axios.get("/API/farms/" + resProductInfo.articleID);
+    document.getElementById("farmName").innerHTML = resFarmInfo.data[0].farmName;
+    document.getElementById("farmDesc").innerHTML = resFarmInfo.data[0].description;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function addToCart() {
   /* BASE LAYOUT FOR CART SHOULD ONLY BE CREATED ONCE PER BTN CLICK*/
   if (!document.getElementById("cart")) cartLayout();
-  
+
   addProductToCart(this);
 }
 
@@ -105,33 +109,42 @@ function cartLayout() {
  * @description adds products to the cart based on which add to cart button gets clicked
  */
 async function addProductToCart(self) {
-  const userID = window.localStorage.getItem('userID');
-  let cartItemsNr = document.querySelectorAll('.cartProduct').length;
+  const userID = window.localStorage.getItem("userID");
+  let cartItemsNr = document.querySelectorAll(".cartProduct").length;
   let cardInfo =
     self.parentElement.parentElement.parentElement.parentElement.parentElement
       .parentElement; //returns div class=product with product_id
   let productID = cardInfo.getAttribute("id");
+
   try {
-    const res = await axios.get("/API/products/" + productID);
-    if (res.data.pImg == "") res.data.pImg = "/pics/no-image.jpg";
+    let res = await axios.get("/API/articles/array/" + productID);
+    res = res.data[0].products[0];
+    if (res.pImg == "") res.pImg = "../pics/no-image.jpg";
+
+    let currentDate = getCurrentDate();
+    let qtyInput = self.parentElement.children[0].value; //save qty of each klick
+
     document.getElementById("productTable").innerHTML += `
-  <div class="cartProduct row align-items-center">
+  <div class="cartProduct row align-items-end">
     <div class="col-md-2"> 
-      <img src="${res.data.pImg}" class="img-fluid" alt="Product img">
+      <img src="../pics/${res.pImg}" class="img-fluid" alt="Product img">
       <input type="hidden" id="custId" name="cart[${cartItemsNr}][userID]" value="${userID}">
       <input type="hidden" id="custId" name="cart[${cartItemsNr}][articleID]" value="${lastSegment}">
-      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pID]" value="${res.data._id}">
-      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pQuantity]" value="${res.data.pQuantity}">
-      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pPrice]" value="${res.data.pPrice}">
+      <input type="hidden" id="custId" name="cart[${cartItemsNr}][createdAt]" value="${currentDate}">
+      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pID]" value="${res._id}">
+      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pName]" value="${res.pName}">
+      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pImg]" value="${res.pImg}">
+      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pQuantity]" value="${document.getElementById('quantity').value}">
+      <input type="hidden" id="custId" name="cart[0][products][${cartItemsNr}][pPrice]" value="${res.pPrice}">
     </div>
     <div class="col-md-4"> 
-      <p>${res.data.pName}</p>
+      <p>${res.pName}</p>
     </div>
     <div class="col-md-2"> 
-      <p>${res.data.pQuantity}</p>
+      <p>${qtyInput}</p>
     </div>
-    <div class="col-md-2"> 
-      <p>${res.data.pPrice}</p>
+    <div class="col-md-2 price"> 
+      <p>${res.pPrice * qtyInput + ':-'}</p>
     </div>
     <div class="col-md-2 mb-3"> 
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -140,13 +153,20 @@ async function addProductToCart(self) {
         </svg>
     </div>
   </div>`;
-
+    let priceDiv = document.querySelectorAll('.price p');
+    let price = 0;
+    for (let k = 0; k< priceDiv.length; k++){
+      price += parseInt(priceDiv[k].innerHTML);
+    }
+    //document.querySelector('#totPrice p').innerHTML += price;
     /* Add submit button only once, and append it every time as lastchild*/
-    if (!document.getElementById("cartSubmit")) addSubmitBtn();
+    if (!document.getElementById("submitInfo")) addSubmitBtn();
     else {
-      var d = document.getElementById("cartSubmit");
+      var d = document.getElementById("submitInfo");
       d.parentNode.appendChild(d);
     }
+    document.querySelector('#totPrice #price').innerHTML = price + ':-';
+
   } catch (error) {
     console.error(error);
   }
@@ -155,9 +175,23 @@ async function addProductToCart(self) {
 function addSubmitBtn() {
   document.getElementById(
     "productTable"
-  ).innerHTML += `<div id="cartSubmit" class="row"><input type="submit" value="Bekräfta Köp" onClick="confirmCart()"></div></div>`;
+  ).innerHTML += `
+    <div class="row" id="submitInfo">
+      <div id="totPrice" style="width:max-content;">
+      <p>Totalt: <span id="price"><span></p>
+      </div>
+      <div id="cartSubmit" style="width:max-content;">
+        <input type="submit" value="Bekräfta Köp">
+      </div>
+    </div>
+</div>`;
 }
 
-function confirmCart() {
-    document.getElementById('showCartResult').style.display = "block";
+function getCurrentDate() {
+  var today = new Date();
+  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var currentDate = date+' '+time;
+
+  return currentDate;
 }

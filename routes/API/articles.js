@@ -5,23 +5,49 @@ const Article = require('../../models/article')
 //Getting all
 router.get('/', async (req,res) => {
     try {
-        const articles = await Article.find();
-        res.json(articles)
+        const article = await Article.find();
+        res.json(article)
     } catch(err) {
         res.status(500).json({message: err.message}) // 500 = error on server/database
     }
 })
+//Getting one
+router.get('/:id',getArticle, (req,res) => {
+    res.send(res.article);
+})
 
 //Getting one
-router.get('/:id', getArticle, (req,res) => {
-    res.send(res.article)
+router.get('/farmID/:farmID',async (req,res) => {
+    try {
+        let article = await Article.find({farmID: req.params.farmID});        
+        if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
+        res.json(article);
+    } catch (err) {
+        return res.status(500).json({message: err.message})
+    }
+})
+
+//Getting product of the array products, used in farm.js to get the product a user added to cart
+router.get('/array/:id',async (req,res) => {
+    let article
+    try {
+        article = await Article.find({"products._id":req.params.id}).select({ products: {$elemMatch: {_id: req.params.id}}});
+        if (article == null) return res.status(404).json({message: 'Cannot find Article.'}) // 404 = could not find something, Article
+        res.json(article)
+    } catch (err) {
+        return res.status(500).json({message: err.message})
+    }
 })
 
 //Creating one
 router.post('/', async (req,res) => {
     const article = new Article({
-        farmName: req.body.farmName,
-        description: req.body.description
+        farmID: req.body.farmID,
+        pName: req.body.farmName,
+        pQuantity: req.body.description,
+        pDesc: req.body.products,
+        pImg: req.body.pImg,
+        pPrice: req.body.pPrice
     })
 
     try {
@@ -64,6 +90,7 @@ async function getArticle(req, res, next){
     } catch (err) {
         return res.status(500).json({message: err.message})
     }
+
     res.article = article
     next()
 }

@@ -17,6 +17,16 @@ router.get("/:id", getUser, (req, res) => {
   res.send(res.user);
 });
 
+router.get('/fbUserID/:id',async (req,res) => {
+  try {
+      let farm = await User.find({fbUserId: req.params.id});
+      if (farm == null) return res.status(404).json({message: 'Cannot find Farm.'}) // 404 = could not find something, Farm
+      res.json(farm);
+  } catch (err) {
+      return res.status(500).json({message: err.message})
+  }
+})
+
 //Creating one
 router.post("/", async (req, res) => {
   const user = new User({

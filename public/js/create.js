@@ -2,10 +2,19 @@
 /**
  * Add more products FORM
  */
- let addMoreProducts = document.querySelector("#addMoreProducts")
- 
- if (addMoreProducts)
- addMoreProducts.addEventListener("click", function () {
+
+(async function () {
+  try {
+    const userID = window.localStorage.getItem("userID")
+    const res = await axios.get("/API/farms/" + userID);
+    document.getElementById('farmID').value = res.data[0]._id;
+    document.getElementsByClassName('addArticle')[0].innerHTML += `<input type="submit" id="submitArticle" class="mt-3 align-self-end" />`;
+  } catch (error) {
+    console.error(error);
+  }
+})();
+
+function addMoreProducts(){
     let container = document.createElement("div");
     container.classList.add("product");
     container.classList.add("container");
@@ -43,34 +52,4 @@
                     </div>`;
     container.innerHTML = appendHTML;
     productContainer.append(container);
-  });
-
-
-
-
-
-
-
-
-
-/**
- * onCLick of PostToFacebook btn, gets one article of the clicked btn and sends to facebook API aka fb.js
- */
-async function sendDataFacebook() {
-  let resDataString = "";
-  try {
-    const res = await axios.get("/articles/" + this.getAttribute("id"));
-    resDataString =
-      res.data.description +
-      "\r\n\r\n" +
-      "Produkter till försäljning:" +
-      "\r\n\r\n" +
-      "- " +
-      res.data.product +
-      " " +
-      res.data.quantity;
-    postArticle(resDataString, res.data._id);
-  } catch (error) {
-    console.error(error);
-  }
-}
+  };
