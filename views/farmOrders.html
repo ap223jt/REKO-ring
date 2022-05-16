@@ -17,12 +17,11 @@
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-  <script src="/js/create.js" type="text/javascript" defer></script>
+  <script src="/js/farmOrders.js" type="text/javascript" defer></script>
   <script src="/js/fb.js" type="text/javascript" defer></script>
 
-  <title>Reko-ring</title>
+  <title>Reko-ring - Beställningar</title>
   <link rel="icon" type="image/x-icon" href="pics/logo-nobgfavic.png">
-
 </head>
 
 <body>
@@ -45,7 +44,7 @@
   <main class="is_blurred">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container">
-        <a class="navbar-brand" href="./index.html"><img src="pics/logo-nobg100.png" alt="Reko-ring logo"></a>
+        <a class="navbar-brand" href="/"><img src="pics/logo-nobg100.png" alt="Reko-ring logo"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -65,8 +64,8 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="./profil.html">Redigera Profil</a></li>
-                <li><a class="dropdown-item" href="#">Skapa artikel</a></li>
-                <li><a class="dropdown-item" href="./farmOrders.html">Beställningar</a></li>
+                <li><a class="dropdown-item" href="./create.html">Skapa artikel</a></li>
+                <li><a class="dropdown-item" href="#">Beställningar</a></li>
               </ul>
             </li>
           </ul>
@@ -84,58 +83,20 @@
       </div>
     </nav>
 
-
-    <form action="/create-article" method="POST">
-      <div class="addArticle red">
-        <div>
-          <label for="descriptionText" class="form-label">Inför reko-rings samnligsplats, datum:</label>
-          <input type="date" id="setDate" name="dealingDate" max="2030-12-31" required><br><br>
-          <input type="hidden" id="farmID"  name="farmID" />
-        </div>
-
-        <div id="addProducts">
-          <div class="addProduct container">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="productNamn" class="form-label">Produkt namn</label>
-                <input type="text" class="form-control" id="product" placeholder="Vita ägg 24st/pack" name="products[][pName]" required/>
-              </div>
-
-              <div class="col-md-3">
-                <label for="quantity" class="form-label">Antal pack/liter/vikt</label>
-                <input type="number" class="form-control" id="quantity" name="products[][pQuantity]" required/>
-              </div>
-              <div class="col-md-3">
-                <label for="quantity" class="form-label">Pris</label>
-                <input type="number" class="form-control" id="price" name="products[][pPrice]" step=".01" required/>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-8">
-                <label for="productNamn" class="form-label">Valfri beskrivnig av produkten <span
-                    class="smallText">(valfri)</span></label>
-                <input type="text" class="form-control" id="product" placeholder="Våra godaste ägg..köps 24st per paket"
-                  name="products[][pDesc]" />
-              </div>
-
-              <div class="col-md-4 align-self-end">
-                <label for="productPic" class="form-label">Lägg till bild <span
-                    class="smallText">(valfri)</span></label>
-                <input type="file" id="productPic" name="products[][pImg]">
-              </div>
-            </div>
-          </div>
-          <!-- MORE CONTAINERS OF PRODUCTS GETS ADDED HERE IF + BUTTON IS CLICKED-->
-        </div>
-
-        <div id="addMoreProducts" onclick="addMoreProducts()">
-          <span>+</span>
-        </div>
-
-          <!-- INSERT SUBMIT BTN BY JS -->
-
+    <div class="d-flex flex-column align-items-center">
+      <div class="text-center mb-5">
+        <h2>Beställningar</h2>
+        <p>Här kan du se kunders beställningar och acceptera eller neka köp:</p>
       </div>
-    </form>
+      <div class="d-flex flex-column align-items-center orders">
+        <h3>Aktiva orders:</h3>
+        <div class="d-flex flex-row justify-content-evenly flex-wrap" id="activeOrders"></div>
+      </div>
+
+      <div class="d-flex flex-column align-items-center orders">
+        <h3>Äldre ordrar</h3>
+        <div class="d-flex flex-row justify-content-evenly" id="oldOrders"></div>
+      </div>
+    </div>
   </main>
 </html>

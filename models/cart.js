@@ -15,6 +15,14 @@ const cartSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      pName: {
+        type: String,
+        required: true,
+      },
+      pImg: {
+        type: String,
+        required: true,
+      },
       pQuantity: {
         type: String,
         required: true,
@@ -25,11 +33,16 @@ const cartSchema = new mongoose.Schema({
       },
     },
   ],
-  acceptedByFarm : {
-    type: Boolean,
-    default: false,
+  orderStatus : {
+    type: String,
+    default: "pending",
     required: true
+  },
+  createdAt: {
+    type: String,
   }
-});
+}
+
+);
 
 module.exports = mongoose.model("Cart", cartSchema);
